@@ -1,3 +1,10 @@
+/**
+ * Arquivo: app.js
+ * Descrição: arquivo responsável por toda a configuração da aplicação.
+ * Data: 31/12/2020
+ * Author: Marcelo Battistini
+ */
+
 const createError = require('http-errors');
 const express = require('express');
 const cors = require('cors');
