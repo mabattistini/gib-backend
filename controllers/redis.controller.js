@@ -7,10 +7,17 @@
 
 const redis = require('./../config/redis')
 
-exports.setRedis = function (key, value) {
+redis.on('error', function (err) {
+    console.log('Error ' + err);
+});
+
+exports.setRedis = function (key, value,expire = null) {
     return new Promise((resolve, reject) => {
         try {
             redis.set(key, value)
+            if (expire == null) {
+                redis.expire(key, expire);
+            }
             resolve(true)
         } catch (e) {
             reject(Error(e.message))
