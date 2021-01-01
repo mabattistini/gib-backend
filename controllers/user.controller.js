@@ -7,7 +7,7 @@
 
 const md5 = require('md5');
 
-const db = require('../config/database');
+const db = require('../config/postgresql');
 
 
 // ==> Método responsável por criar um novo 'User':

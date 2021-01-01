@@ -1,5 +1,5 @@
 /**
- * Arquivo: config/database.js
+ * Arquivo: config/postgresql.js
  * Descrição: arquivo responsável pela 'connection da aplicação: Redis.
  * Data: 31/12/2020
  * Author: Marcelo Battistini

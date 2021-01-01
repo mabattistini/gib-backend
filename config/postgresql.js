@@ -1,5 +1,5 @@
 /**
- * Arquivo: config/database.js
+ * Arquivo: config/postgresql.js
  * Descrição: arquivo responsável pelas 'connectionStrings da aplicação: PostgreSQL.
  * Data: 31/12/2020
  * Author: Marcelo Battistini
