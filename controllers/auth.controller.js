@@ -33,7 +33,6 @@ exports.createUser = async (req, res) => {
     } catch (e) {
         res.status(200).send({result: "error", message: e.message})
     }
-
 };
 
 // ==> Método responsável por listar todos os 'Users':
