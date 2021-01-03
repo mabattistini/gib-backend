@@ -5,8 +5,7 @@
  * Author: Marcelo Battistini
  */
 
-const md5 = require('md5');
-
+const bcrypt = require('bcryptjs')
 const db = require('../config/postgresql');
 
 
@@ -16,7 +15,7 @@ exports.createUser = async (req, res) => {
     try {
         const response = await db.query(
             'INSERT INTO users (email, full_name, "password", phone_number) VALUES($1, $2, $3, $4) returning id;',
-            [email, full_name, md5(password), phone_number],
+            [email, full_name, bcrypt(password), phone_number],
         );
         let userId = response.rows[0].id
 
@@ -90,7 +89,7 @@ exports.deleteUserById = async (req, res) => {
 };
 
 // ==> Método responsável por validar o login de um 'User':
-exports.login = async (req, res) => {
+exports.authenticate = async (req, res) => {
     const username = req.body.email
     const password = md5(req.body.password)
 
@@ -100,8 +99,16 @@ exports.login = async (req, res) => {
         res.status(200).send({result: "error", message: "Email ou senha inválido"})
     } else {
         user = response.rows[0]
-        if (user.accout_confirmed === 0)
-            res.status(200).send({result: "error", message: "Você não confirmou o seu cadastro"})
-        else  res.status(200).send({result: "success", message: "Login efetuado com sucesso", user: response.rows[0]})
-    };
+        if (!await bcrypt.compare(password, user.password)) {
+            res.status(200).send({result: "error", message: "Email ou senha inválido"})
+        } else {
+            if (user.accout_confirmed === 0)
+                res.status(200).send({result: "error", message: "Você não confirmou o seu cadastro"})
+            else res.status(200).send({
+                result: "success",
+                message: "Login efetuado com sucesso",
+                user: response.rows[0]
+            })
+        }
+    }
 }

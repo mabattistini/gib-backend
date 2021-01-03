@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/create',userController.createUser )
-router.post('/login',userController.login )
+router.post('/authenticate',userController.authenticate )
 router.get('/all',userController.listAllUsers )
 router.get('/:id',userController.findUserById )
 router.put('/:id',userController.updateUserById )

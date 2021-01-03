@@ -1,3 +1,25 @@
+const Post = require('../models/post')
+
+exports.savePost = async (req, res) => {
+    try {
+        const post = await Post.create(req.body)
+        res.status(200).send({result: "success", message: "OK", post: post})
+    } catch (e) {
+        res.status(200).send({result: "error", message: e.message})
+    }
+}
+
+exports.deletePost = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const post = await Post.deleteOne(id)
+        res.status(200).send({result: "success", message: "OK"})
+    } catch (e) {
+        res.status(200).send({result: "error", message: e.message})
+    }
+}
+
+/*
 
 const mongodb = require('./../config/mongodb')
 
@@ -27,3 +49,5 @@ exports.delete = async (req, res) => {
         })
     })
 }
+
+ */
