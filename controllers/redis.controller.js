@@ -1,5 +1,5 @@
 /**
- * Arquivo: src/controllers/user.controller.js
+ * Arquivo: src/controllers/auth.controller.js
  * Descrição: arquivo responsável pelo grenciamento de chaves Redis
  * Data: 31/12/2020
  * Author: Marcelo Battistini

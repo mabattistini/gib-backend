@@ -1,5 +1,5 @@
 /**
- * Arquivo: controllers/user.controller.js
+ * Arquivo: controllers/auth.controller.js
  * Descrição: arquivo responsável pelo CRUD da classe 'Users'
  * Data: 31/12/2020
  * Author: Marcelo Battistini
@@ -7,7 +7,12 @@
 
 const bcrypt = require('bcryptjs')
 const db = require('../config/postgresql');
+const jwt = require('jsonwebtoken')
+const authConfig = require('../config/authConfig.json')
 
+function generateToken(params = {}) {
+    return jwt.sign(params, authConfig.secret, {expiresIn: authConfig.expiresIn })
+}
 
 // ==> Método responsável por criar um novo 'User':
 exports.createUser = async (req, res) => {
@@ -15,13 +20,14 @@ exports.createUser = async (req, res) => {
     try {
         const response = await db.query(
             'INSERT INTO users (email, full_name, "password", phone_number) VALUES($1, $2, $3, $4) returning id;',
-            [email, full_name, bcrypt(password), phone_number],
+            [email, full_name, bcrypt.hash(password, 10), phone_number],
         );
         let userId = response.rows[0].id
 
         res.status(201).send({
             result: "success",
             message: 'User added successfully!',
+            token: generateToken({id: userId}),
             user_id: userId
         });
     } catch (e) {
@@ -45,6 +51,7 @@ exports.listAllUsers = async (req, res) => {
 // ==> Método responsável por selecionar 'User' pelo 'Id':
 exports.findUserById = async (req, res) => {
     const UserId = parseInt(req.params.id);
+
     try {
         const response = await db.query(
             'SELECT * FROM Users WHERE id = $1',
@@ -104,11 +111,14 @@ exports.authenticate = async (req, res) => {
         } else {
             if (user.accout_confirmed === 0)
                 res.status(200).send({result: "error", message: "Você não confirmou o seu cadastro"})
-            else res.status(200).send({
-                result: "success",
-                message: "Login efetuado com sucesso",
-                user: response.rows[0]
-            })
+            else {
+                res.status(200).send({
+                    result: "success",
+                    message: "Login efetuado com sucesso",
+                    token: generateToken({id: user.id}),
+                    user: response.rows[0]
+                })
+            }
         }
     }
 }

@@ -1,23 +1,22 @@
 /**
- * Arquivo: routes/user.js
+ * Arquivo: routes/auth.js
  * Descrição: arquivo responsável pelas rotas da classe 'Users'
  * Data: 31/12/2020
  * Author: Marcelo Battistini
  */
 
 const express = require('express');
-const authMiddleware = require('../middlewares/auth')
 const router = express.Router();
-
-router.use(authMiddleware)
 
 const userController = require('../controllers/auth.controller')
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
+  res.send('respond with a resource');
 });
 
+router.post('/register',userController.createUser )
+router.post('/authenticate',userController.authenticate )
 
 router.get('/all',userController.listAllUsers )
 router.get('/:id',userController.findUserById )
