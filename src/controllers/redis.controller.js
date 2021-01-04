@@ -5,7 +5,7 @@
  * Author: Marcelo Battistini
  */
 
-const redis = require('./../config/redis')
+const redis = require('../../config/redis')
 
 redis.on('error', function (err) {
     console.log('Error ' + err);

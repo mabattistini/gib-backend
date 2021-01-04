@@ -6,9 +6,11 @@
  */
 
 const bcrypt = require('bcryptjs')
-const db = require('../config/postgresql');
+const db = require('../modules/postgresql');
 const jwt = require('jsonwebtoken')
-const authConfig = require('../config/authConfig.json')
+const authConfig = require('../../config/authConfig.json')
+const crypto = require('crypto')
+const mailer = require('../modules/nodemailer')
 
 function generateToken(params = {}) {
     return jwt.sign(params, authConfig.secret, {expiresIn: authConfig.expiresIn })
@@ -34,6 +36,43 @@ exports.createUser = async (req, res) => {
         res.status(200).send({result: "error", message: e.message})
     }
 };
+
+exports.forgotPassword = async (req, res) => {
+    const {email} = req.body
+
+    try {
+        const user = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+
+        if (user.rows.length === 0)
+            res.status(400).send({error: "User not found"})
+        let userId = user.rows[0].id
+
+        const token = crypto.randomBytes(20).toString('hex')
+        const now = new Date()
+        now.setHours(now.getHours() + 1)
+
+
+        const response = await db.query('UPDATE users SET ' +
+            'password_reset_token = $1, ' +
+            'password_reset_expires = $2 WHERE id = $3', [token, now, userId])
+
+        console.log('asassss')
+
+        mailer.sendMail({
+            to: email,
+            from: 'admin@guib.is',
+            subject: 'teste',
+            template: 'forgot_password',
+            context: {token}
+        }, (err) => {
+            if (err) return res.status(400).send({error: 'Cannot send forgot password email' })
+        })
+
+            res.status(200).send({token: token, expires: now})
+    } catch (e) {
+        res.status(200).send({result: "error", message: e.message})
+    }
+}
 
 // ==> Método responsável por listar todos os 'Users':
 exports.listAllUsers = async (req, res) => {

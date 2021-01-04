@@ -6,13 +6,17 @@
  */
 
 const { Pool } = require('pg');
-const dotenv = require('dotenv');
+const path = require('path')
+const {host, port, database, user, password} = require(path.resolve('./config/postgresConfig.json'))
 
-dotenv.config();
 
 // ==> Conexão com a Base de Dados:
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    host,
+    port,
+    database,
+    user,
+    password
 });
 
 pool.on('connect', () => {

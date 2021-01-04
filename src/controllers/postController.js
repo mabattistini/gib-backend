@@ -5,7 +5,7 @@
  * Author: Marcelo Battistini
  */
 
-const db = require('../config/postgresql');
+const db = require('../modules/postgresql');
 
 
 exports.createPost = async (req, res) => {
