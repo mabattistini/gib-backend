@@ -78,6 +78,18 @@ exports.forgotPassword = async (req, res) => {
   //  }
 }
 
+exports.resetPassword = async (req, res) => {
+    const token = req.params.token
+
+    const response = await db.query('SELECT * FROM USERS WHERE password_reset_token = $1', [token])
+
+    if (response.rows.length === 0) {
+        return res.status(400).send({error: "Token not found"})
+    }
+
+    res.status(200).send({result: 'success'})
+}
+
 // ==> Método responsável por validar o login de um 'User':
 exports.authenticate = async (req, res) => {
     const username = req.body.email

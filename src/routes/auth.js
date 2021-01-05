@@ -11,13 +11,14 @@ const router = express.Router();
 const authController = require('../controllers/auth.controller')
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   res.send('respond with a resource');
 });
 
 router.post('/register',authController.createUser )
 router.post('/authenticate',authController.authenticate )
 router.post('/forgot_password', authController.forgotPassword)
+router.post('/reset/password', authController.resetPassword)
 
 
 
