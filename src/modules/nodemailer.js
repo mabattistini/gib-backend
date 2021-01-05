@@ -12,9 +12,15 @@ const transport = nodemailer.createTransport({
 });
 
 transport.use('compile', hbs({
-    viewEngine: 'handlebars',
-    viewPath: path.resolve('./src/resources/mail'),
-    extName: '.html'
-}))
+        viewEngine: {
+            extname: '.hbs',
+            layoutsDir: '/desenv/Guib/guib-backend/src/resources/mail/layouts/',
+            defaultLayout:  'main',
+            partialsDir: 'mail/',
+        },
+        viewPath: path.resolve('./src/resources/mail/'),
+        extName: '.hbs'
+    })
+);
 
 module.exports = transport;

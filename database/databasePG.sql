@@ -1,4 +1,6 @@
--- DROP TABLE users;
+-- 
+DROP TABLE posts;
+DROP TABLE users;
 
 create table users (
     id serial primary key,
@@ -7,6 +9,7 @@ create table users (
     password TEXT NOT NULL,
     phone_number varchar(20),
     password_reset_token text,
+    password_reset_expires timestamp,
     account_validate smallint default 0,
     accout_confirmed smallint default 0
 );

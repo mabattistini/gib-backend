@@ -19,9 +19,6 @@ router.post('/register',authController.createUser )
 router.post('/authenticate',authController.authenticate )
 router.post('/forgot_password', authController.forgotPassword)
 
-router.get('/all',authController.listAllUsers )
-router.get('/:id',authController.findUserById )
-router.put('/:id',authController.updateUserById )
-router.delete('/:id',authController.deleteUserById )
+
 
 module.exports = router;

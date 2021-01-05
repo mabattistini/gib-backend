@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.use(authMiddleware)
 
-const userController = require('../controllers/auth.controller')
+const userController = require('../controllers/userController')
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
