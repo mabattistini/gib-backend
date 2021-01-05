@@ -79,13 +79,31 @@ exports.forgotPassword = async (req, res) => {
 }
 
 exports.resetPassword = async (req, res) => {
-    const token = req.params.token
+    const token = req.query.token
+    const { password } = req.body
+    newPassword = bcrypt.hash(password, 10)
+    console.log(newPassword)
 
     const response = await db.query('SELECT * FROM USERS WHERE password_reset_token = $1', [token])
 
     if (response.rows.length === 0) {
         return res.status(400).send({error: "Token not found"})
     }
+    const now = new Date()
+    let expires = response.rows[0].password_reset_expires
+    let userId = response.rows[0].id
+    let token_validate = (expires > now)
+
+    if (!token_validate) return res.status(400).send({error: "Token as expired"})
+
+    try {
+        const update = await db.query('UPDATE users SET ' +
+            'password = $1 WHERE id = $2', [bcrypt.hash(password, 10), userId])
+    } catch (err) {
+        return res.status(400).send({error: err.message})
+    }
+
+    console.log(now, expires, token_validate)
 
     res.status(200).send({result: 'success'})
 }
@@ -93,7 +111,7 @@ exports.resetPassword = async (req, res) => {
 // ==> Método responsável por validar o login de um 'User':
 exports.authenticate = async (req, res) => {
     const username = req.body.email
-    const password = md5(req.body.password)
+    const password = req.body.password
 
     const response = await db.query('SELECT * FROM USERS WHERE EMAIL = $1', [username])
     let user;
