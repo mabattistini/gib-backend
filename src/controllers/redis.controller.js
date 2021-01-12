@@ -1,5 +1,5 @@
 /**
- * Arquivo: src/controllers/auth.controller.js
+ * Arquivo: src/controllers/redis.controller.js
  * Descrição: arquivo responsável pelo grenciamento de chaves Redis
  * Data: 31/12/2020
  * Author: Marcelo Battistini
@@ -11,7 +11,7 @@ redis.on('error', function (err) {
     console.log('Error ' + err);
 });
 
-exports.setRedis = function (key, value,expire = null) {
+exports.setKey = function (key, value,expire = null) {
     return new Promise((resolve, reject) => {
         try {
             redis.set(key, value)
@@ -25,7 +25,7 @@ exports.setRedis = function (key, value,expire = null) {
     })
 }
 
-exports.getRedis = function (key) {
+exports.getKey = function (key) {
     return new Promise((resolve, reject) => {
         try {
             resolve(redis.get(key))
