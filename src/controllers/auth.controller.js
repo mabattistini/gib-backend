@@ -20,9 +20,10 @@ function generateToken(params = {}) {
 exports.createUser = async (req, res) => {
     const {email, full_name, password, phone_number} = req.body;
     try {
+        let pwd = await bcrypt.hash(password, 10)
         const response = await db.query(
             'INSERT INTO users (email, full_name, "password", phone_number) VALUES($1, $2, $3, $4) returning id;',
-            [email, full_name, bcrypt.hash(password, 10), phone_number],
+            [email, full_name, pwd, phone_number],
         );
         let userId = response.rows[0].id
 
@@ -120,12 +121,12 @@ exports.authenticate = async (req, res) => {
     } else {
         user = response.rows[0]
         if (!await bcrypt.compare(password, user.password)) {
-            res.status(200).send({result: "error", message: "Email ou senha inválido"})
+            return res.status(200).send({result: "error", message: "Email ou senha inválido"})
         } else {
             if (user.accout_confirmed === 0)
-                res.status(200).send({result: "error", message: "Você não confirmou o seu cadastro"})
+                return res.status(200).send({result: "error", message: "Você não confirmou o seu cadastro"})
             else {
-                res.status(200).send({
+                return res.status(200).send({
                     result: "success",
                     message: "Login efetuado com sucesso",
                     token: generateToken({id: user.id}),
